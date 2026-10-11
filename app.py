@@ -1,12 +1,10 @@
 import random
 import streamlit as st
 
-# Cấu hình trang
 st.set_page_config(
-    page_title="Pokémon Battle Arena", page_icon="⚡", layout="centered"
+    page_title="Pokemon Battle Arena", page_icon="⚡", layout="centered"
 )
 
-# Giao diện CSS tùy chỉnh
 st.markdown(
     """
     <style>
@@ -21,15 +19,14 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# Danh sách Pokémon để người chơi lựa chọn
 POKEMONS = {
     "Pikachu": {
         "hp": 100,
         "max_hp": 100,
         "moves": {
-            "⚡ Điện Giật (Normal)": 15,
-            "💥 Tia Chớp Sấm Sét (Strong)": 25,
-            "💖 Hồi Máu (Heal)": -20,
+            "Dien Giat (Normal)": 15,
+            "Sam Set (Strong)": 25,
+            "Hoi Mau (Heal)": -20,
         },
         "icon": "⚡",
     },
@@ -37,9 +34,9 @@ POKEMONS = {
         "hp": 110,
         "max_hp": 110,
         "moves": {
-            "🔥 Cào Lửa (Normal)": 14,
-            "🌋 Ngọn Lửa Địa Ngục (Strong)": 28,
-            "💖 Hồi Máu (Heal)": -18,
+            "Cao Lua (Normal)": 14,
+            "Ngon Lua Dia Nguc (Strong)": 28,
+            "Hoi Mau (Heal)": -18,
         },
         "icon": "🔥",
     },
@@ -47,9 +44,9 @@ POKEMONS = {
         "hp": 120,
         "max_hp": 120,
         "moves": {
-            "🍃 Roi Mây (Normal)": 12,
-            "🌿 Bão Lá (Strong)": 22,
-            "💖 Hồi Máu (Heal)": -25,
+            "Roi May (Normal)": 12,
+            "Bao La (Strong)": 22,
+            "Hoi Mau (Heal)": -25,
         },
         "icon": "🍃",
     },
@@ -60,7 +57,6 @@ BOSSES = [
     {"name": "Team Rocket Mewtwo", "hp": 160, "max_hp": 160, "icon": "😈", "atk": 25},
 ]
 
-# Khởi tạo trạng thái game
 if "game_state" not in st.session_state:
   st.session_state.game_state = "SELECT"
 if "player" not in st.session_state:
@@ -68,83 +64,74 @@ if "player" not in st.session_state:
 if "boss" not in st.session_state:
   st.session_state.boss = None
 if "battle_log" not in st.session_state:
-  st.session_state.battle_log = "Trận chiến bắt đầu! Hãy tung chiêu hợp lý."
+  st.session_state.battle_log = "Tran chien bat dau! Hay chon chieu thuc."
 
-
-# --- GIAO DIỆN 1: CHỌN POKÉMON ---
 if st.session_state.game_state == "SELECT":
-  st.title("⚡ Pokémon Battle Arena")
-  st.write("Chọn Pokémon đồng hành cùng bạn để bước vào trận chiến:")
+  st.title("Pokemon Battle Arena")
+  st.write("Chon Pokemon dong hanh cung ban:")
 
   col1, col2, col3 = st.columns(3)
 
   with col1:
-    if st.button("⚡ Pikachu"):
+    if st.button("Pikachu"):
       st.session_state.player = POKEMONS["Pikachu"].copy()
       st.session_state.game_state = "BATTLE"
       st.session_state.boss = random.choice(BOSSES).copy()
       st.rerun()
 
   with col2:
-    if st.button("🔥 Charmander"):
+    if st.button("Charmander"):
       st.session_state.player = POKEMONS["Charmander"].copy()
       st.session_state.game_state = "BATTLE"
       st.session_state.boss = random.choice(BOSSES).copy()
       st.rerun()
 
   with col3:
-    if st.button("🍃 Bulbasaur"):
+    if st.button("Bulbasaur"):
       st.session_state.player = POKEMONS["Bulbasaur"].copy()
       st.session_state.game_state = "BATTLE"
       st.session_state.boss = random.choice(BOSSES).copy()
       st.rerun()
 
-
-# --- GIAO DIỆN 2: TRẬN CHIẾN ---
 elif st.session_state.game_state == "BATTLE":
   player = st.session_state.player
   boss = st.session_state.boss
 
-  st.title("⚔️ Trận Chiến Pokémon")
+  st.title("Tran Chien Pokemon")
   st.divider()
 
   c1, c2 = st.columns(2)
 
   with c1:
-    st.subheader(f"{player['icon']} Bạn")
-    st.write(f"❤️ Máu (HP): {player['hp']} / {player['max_hp']}")
+    st.subheader(f"{player['icon']} Ban")
+    st.write(f"Mau (HP): {player['hp']} / {player['max_hp']}")
     st.progress(max(0, player["hp"] / player["max_hp"]))
 
   with c2:
-    st.subheader(f"{boss['icon']} Đối Thủ: {boss['name']}")
-    st.write(f"❤️ Máu (HP): {boss['hp']} / {boss['max_hp']}")
+    st.subheader(f"{boss['icon']} Doi Thu: {boss['name']}")
+    st.write(f"Mau (HP): {boss['hp']} / {boss['max_hp']}")
     st.progress(max(0, boss["hp"] / boss["max_hp"]))
 
   st.divider()
 
-  st.info(f"📢 **Nhật ký:** {st.session_state.battle_log}")
+  st.info(f"Nhat ky: {st.session_state.battle_log}")
 
-  st.markdown("### 🎯 Chọn hành động của bạn:")
+  st.markdown("### Chon hanh dong:")
   move_cols = st.columns(3)
-
   move_list = list(player["moves"].keys())
 
   with move_cols[0]:
     if st.button(move_list[0]):
       dmg = player["moves"][move_list[0]]
       boss["hp"] -= dmg
-      st.session_state.battle_log = (
-          f"Bạn dùng chiêu tấn công và gây ra {dmg} sát thương!"
-      )
+      st.session_state.battle_log = f"Ban gay ra {dmg} sat thuong!"
       if boss["hp"] <= 0:
         st.session_state.game_state = "OVER"
         st.session_state.win = True
       else:
         b_dmg = random.randint(10, boss["atk"])
         player["hp"] -= b_dmg
-        st.session_state.battle_log += (
-            f" Đối thủ phản công gây {b_dmg} sát thương!"
-        )
+        st.session_state.battle_log += f" Doi thu phan cong gay {b_dmg} HP!"
         if player["hp"] <= 0:
           st.session_state.game_state = "OVER"
           st.session_state.win = False
@@ -154,18 +141,14 @@ elif st.session_state.game_state == "BATTLE":
     if st.button(move_list[1]):
       dmg = player["moves"][move_list[1]]
       boss["hp"] -= dmg
-      st.session_state.battle_log = (
-          f"Bạn tung chiêu cực mạnh gây ra {dmg} sát thương!"
-      )
+      st.session_state.battle_log = f"Ban dung chieu manh gay {dmg} sat thuong!"
       if boss["hp"] <= 0:
         st.session_state.game_state = "OVER"
         st.session_state.win = True
       else:
         b_dmg = random.randint(10, boss["atk"])
         player["hp"] -= b_dmg
-        st.session_state.battle_log += (
-            f" Đối thủ phản công gây {b_dmg} sát thương!"
-        )
+        st.session_state.battle_log += f" Doi thu phan cong gay {b_dmg} HP!"
         if player["hp"] <= 0:
           st.session_state.game_state = "OVER"
           st.session_state.win = False
@@ -175,9 +158,31 @@ elif st.session_state.game_state == "BATTLE":
     if st.button(move_list[2]):
       heal = abs(player["moves"][move_list[2]])
       player["hp"] = min(player["max_hp"], player["hp"] + heal)
-      st.session_state.battle_log = f"Bạn hồi phục được {heal} HP!"
+      st.session_state.battle_log = f"Ban hoi phuc duoc {heal} HP!"
       b_dmg = random.randint(10, boss["atk"])
       player["hp"] -= b_dmg
+      st.session_state.battle_log += f" Doi thu tranh thu danh boi {b_dmg} HP!"
+      if player["hp"] <= 0:
+        st.session_state.game_state = "OVER"
+        st.session_state.win = False
+      st.rerun()
+
+elif st.session_state.game_state == "OVER":
+  st.title("Ket Qua Tran Dau")
+
+  if st.session_state.win:
+    st.success("Chuc mung! Ban da chien thang!")
+  else:
+    st.error("That bai! Pokemon cua ban da kiet suc.")
+
+  if st.button("Choi Lai Tu Dau"):
+    st.session_state.game_state = "SELECT"
+    st.session_state.player = None
+    st.session_state.boss = None
+    st.session_state.battle_log = "Tran chien bat dau!"
+    st.rerun()
+
+] -= b_dmg
       st.session_state.battle_log += (
           f" Tranh thủ lúc hồi máu, đối thủ đánh bồi {b_dmg} sát thương!"
       )
