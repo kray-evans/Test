@@ -62,7 +62,7 @@ BOSSES = [
 
 # Khởi tạo trạng thái game
 if "game_state" not in st.session_state:
-  st.session_state.game_state = "SELECT"  # Các trạng thái: SELECT, BATTLE, OVER
+  st.session_state.game_state = "SELECT"
 if "player" not in st.session_state:
   st.session_state.player = None
 if "boss" not in st.session_state:
@@ -108,11 +108,10 @@ elif st.session_state.game_state == "BATTLE":
   st.title("⚔️ Trận Chiến Pokémon")
   st.divider()
 
-  # Hiển thị thông số 2 bên
   c1, c2 = st.columns(2)
 
   with c1:
-    st.subheader(f"{player['icon']} Bạn ({list(POKEMONS.keys())[0] if 'Pikachu' else ''})")
+    st.subheader(f"{player['icon']} Bạn")
     st.write(f"❤️ Máu (HP): {player['hp']} / {player['max_hp']}")
     st.progress(max(0, player["hp"] / player["max_hp"]))
 
@@ -123,29 +122,24 @@ elif st.session_state.game_state == "BATTLE":
 
   st.divider()
 
-  # Nhật ký trận đấu
   st.info(f"📢 **Nhật ký:** {st.session_state.battle_log}")
 
-  # Lựa chọn chiêu thức
   st.markdown("### 🎯 Chọn hành động của bạn:")
   move_cols = st.columns(3)
 
   move_list = list(player["moves"].keys())
 
-  # Nút chiêu 1
   with move_cols[0]:
     if st.button(move_list[0]):
       dmg = player["moves"][move_list[0]]
       boss["hp"] -= dmg
       st.session_state.battle_log = (
-          f"Bạn dùng chiêu tấn công và gây ra {dmg sát thương!"
+          f"Bạn dùng chiêu tấn công và gây ra {dmg} sát thương!"
       )
-      # Kiểm tra boss chết chưa
       if boss["hp"] <= 0:
         st.session_state.game_state = "OVER"
         st.session_state.win = True
       else:
-        # Boss phản công
         b_dmg = random.randint(10, boss["atk"])
         player["hp"] -= b_dmg
         st.session_state.battle_log += (
@@ -156,7 +150,6 @@ elif st.session_state.game_state == "BATTLE":
           st.session_state.win = False
       st.rerun()
 
-  # Nút chiêu 2 (Mạnh)
   with move_cols[1]:
     if st.button(move_list[1]):
       dmg = player["moves"][move_list[1]]
@@ -178,13 +171,11 @@ elif st.session_state.game_state == "BATTLE":
           st.session_state.win = False
       st.rerun()
 
-  # Nút hồi máu
   with move_cols[2]:
     if st.button(move_list[2]):
       heal = abs(player["moves"][move_list[2]])
       player["hp"] = min(player["max_hp"], player["hp"] + heal)
       st.session_state.battle_log = f"Bạn hồi phục được {heal} HP!"
-      # Boss vẫn đánh khi bạn hồi máu
       b_dmg = random.randint(10, boss["atk"])
       player["hp"] -= b_dmg
       st.session_state.battle_log += (
@@ -198,20 +189,4 @@ elif st.session_state.game_state == "BATTLE":
 
 # --- GIAO DIỆN 3: KẾT THÚC TRẬN ĐẤU ---
 elif st.session_state.game_state == "OVER":
-  st.title("🏆 Kết Quả Trận Đấu")
-
-  if st.session_state.win:
-    st.success("🎉 **CHÚC MỪNG! Bạn đã đánh bại Pokémon đối thủ và giành chiến thắng!**")
-  else:
-    st.error(
-        "💀 **THẤT BY! Pokémon của bạn đã kiệt sức. Hãy luyện tập thêm nhé!**"
-    )
-
-  if st.button("🔄 Chơi Lại Từ Đầu"):
-    st.session_state.game_state = "SELECT"
-    st.session_state.player = None
-    st.session_state.boss = None
-    st.session_state.battle_log = "Trận chiến bắt đầu!"
-    st.rerun()
-
-
+  st.title("🏆
